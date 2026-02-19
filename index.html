@@ -1,23 +1,315 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map — Pine City Zoo</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── Index-only styles (kept here since they're page-specific) ── */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 60%, var(--green-light) 100%);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px 32px;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      background: rgba(255,255,255,.07);
+      border-radius: 50%;
+    }
+
+    .welcome-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,.05);
+      border-radius: 50%;
+    }
+
+    .welcome-banner h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-banner p {
+      font-size: 15px;
+      opacity: .85;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Stats row */
+    .map-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .map-stat {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 10px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .map-stat:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .map-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--green-mid);
+      line-height: 1;
+    }
+
+    .map-stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Quick action buttons */
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .quick-action-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quick-action-btn i { color: var(--green-mid); font-size: 16px; }
+
+    .quick-action-btn:hover {
+      background: var(--green-deep);
+      border-color: var(--green-deep);
+      color: #fff;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .quick-action-btn:hover i { color: #fff; }
+
+    /* Map container */
+    #map-container {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .map-canvas-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    #interactive-map {
+      width: 100%;
+      height: auto;
+      display: block;
+      cursor: pointer;
+    }
+
+    /* Legend */
+    .map-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--stone-pale);
+    }
+
+    .dark-mode .map-legend { background: rgba(111,170,94,.06); }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .legend-dot {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,.7);
+    }
+
+    .legend-dot.animal { background: var(--accent-gold); box-shadow: 0 1px 4px rgba(200,155,60,.4); }
+    .legend-dot.place  { background: #2176ae;            box-shadow: 0 1px 4px rgba(33,118,174,.4); }
+
+    .map-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .map-hint i { color: var(--green-light); }
+
+    @media (max-width: 480px) {
+      .welcome-banner h1 { font-size: 24px; }
+      .map-stat-num { font-size: 24px; }
+      .quick-action-btn { font-size: 12px; padding: 10px 10px; }
+    }
+  </style>
 </head>
 <body>
-<div id="header">
-<img src="images/logo.png"/>
-</div>
-<div id="tabs-top">
-<a href="animals.html">ANIMALS</a>
-<a href="index.html">MAP</a>
-<a href="places.html">PLACES</a>
-</div>
-<div id="main-home">
-<img src="images/map.png">
-</div>
-<div id="tabs-bottom">
-<a href="weather.html">WEATHER</a>
-<a href="feedback.html">FEEDBACK</a>
-</div>
+
+  <div id="header">
+    <img src="images/logo.png" alt="Pine City Zoo"/>
+  </div>
+
+  <nav id="tabs-top">
+    <a href="animals.html"><i class="fa-solid fa-paw"></i> <span>Animals</span></a>
+    <a href="index.html" class="active"><i class="fa-solid fa-map"></i> <span>Map</span></a>
+    <a href="places.html"><i class="fa-solid fa-location-dot"></i> <span>Places</span></a>
+  </nav>
+
+  <div id="main">
+    <div id="content">
+
+      <!-- Search -->
+      <div id="search-container">
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" placeholder="Search animals or attractions…">
+        </div>
+        <div id="search-results"></div>
+      </div>
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <h1>Welcome to Pine City Zoo</h1>
+        <p>Explore our interactive map to discover animals and attractions</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="map-stats">
+        <div class="map-stat">
+          <div class="map-stat-num">15+</div>
+          <div class="map-stat-label">Animals</div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat-num">8</div>
+          <div class="map-stat-label">Attractions</div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat-num">5</div>
+          <div class="map-stat-label">Dining Spots</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="planner.html" class="quick-action-btn">
+          <i class="fa-solid fa-route"></i> Plan Your Visit
+        </a>
+        <a href="weather.html" class="quick-action-btn">
+          <i class="fa-solid fa-sun"></i> Check Weather
+        </a>
+        <a href="feedback.html" class="quick-action-btn">
+          <i class="fa-solid fa-comment-dots"></i> Send Feedback
+        </a>
+      </div>
+
+      <!-- Interactive Map -->
+      <div id="map-container">
+        <div class="map-canvas-wrap">
+          <canvas id="interactive-map"></canvas>
+        </div>
+
+        <div class="map-legend">
+          <div class="legend-item">
+            <span class="legend-dot animal"></span>
+            Animals
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot place"></span>
+            Places &amp; Attractions
+          </div>
+        </div>
+
+        <div class="map-hint">
+          <i class="fa-solid fa-hand-pointer"></i>
+          Hover over markers to preview — click to explore
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="dark-mode-toggle-container">
+    <label class="switch">
+      <input type="checkbox" id="dark-mode-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <nav id="tabs-bottom">
+    <a href="weather.html"><i class="fa-solid fa-sun"></i> <span>Weather</span></a>
+    <a href="feedback.html"><i class="fa-solid fa-comment-dots"></i> <span>Feedback</span></a>
+  </nav>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

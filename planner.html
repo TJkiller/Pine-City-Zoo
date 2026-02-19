@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visit Planner — Pine City Zoo</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <div id="header">
+    <img src="images/logo.png" alt="Pine City Zoo"/>
+  </div>
+
+  <nav id="tabs-top">
+    <a href="animals.html"><i class="fa-solid fa-paw"></i> <span>Animals</span></a>
+    <a href="index.html"><i class="fa-solid fa-map"></i> <span>Map</span></a>
+    <a href="places.html"><i class="fa-solid fa-location-dot"></i> <span>Places</span></a>
+  </nav>
+
+  <div id="main">
+    <div id="content">
+
+      <div class="planner-header">
+        <h1>Plan Your Visit</h1>
+        <p>Select what you'd like to see and we'll build an optimised route</p>
+      </div>
+
+      <!-- Recommended Tours -->
+      <div class="tour-recommendations">
+        <h2><i class="fa-solid fa-route"></i> Recommended Tours</h2>
+        <div class="tour-cards" id="tour-cards"></div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="planner-tabs">
+        <button class="planner-tab active" id="tab-btn-select" onclick="switchPlannerTab('select', this)">
+          1. Select Locations
+        </button>
+        <button class="planner-tab" id="tab-btn-route" onclick="switchPlannerTab('route', this)">
+          2. View Route
+        </button>
+        <button class="planner-tab" id="tab-btn-save" onclick="switchPlannerTab('save', this)">
+          3. Save Plan
+        </button>
+      </div>
+
+      <!-- Tab 1: Select -->
+      <div id="select-tab" class="planner-tab-content active">
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterPlannerCategory('all', this)">
+            <i class="fa-solid fa-border-all"></i> All
+          </button>
+          <button class="filter-btn" onclick="filterPlannerCategory('animals', this)">
+            <i class="fa-solid fa-paw"></i> Animals
+          </button>
+          <button class="filter-btn" onclick="filterPlannerCategory('places', this)">
+            <i class="fa-solid fa-location-dot"></i> Places
+          </button>
+          <button class="filter-btn" onclick="filterPlannerCategory('restaurant', this)">
+            <i class="fa-solid fa-utensils"></i> Dining
+          </button>
+        </div>
+
+        <div class="locations-grid" id="locations-grid"></div>
+
+        <div class="selection-summary">
+          <div>
+            <p>Selected: <span id="selected-count">0</span> locations</p>
+            <p>Est. time: <span id="estimated-time">0</span> min viewing</p>
+          </div>
+          <button class="action-btn primary" onclick="switchPlannerTab('route', document.getElementById('tab-btn-route'))">
+            Generate Route <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 2: Route -->
+      <div id="route-tab" class="planner-tab-content">
+        <div style="position:relative; margin-bottom: 20px;">
+          <canvas id="route-map" width="800" height="350" style="width:100%; height:auto; border-radius: var(--radius-md); display:block;"></canvas>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header">
+            <i class="fa-solid fa-map-signs"></i> Your Route
+          </div>
+          <div class="section-card-body" style="padding: 0 18px;">
+            <div class="route-steps" id="route-steps"></div>
+          </div>
+        </div>
+
+        <div class="route-summary">
+          <p><strong>Walking time:</strong> <span id="total-walk-time">0</span> min</p>
+          <p><strong>Viewing time:</strong> <span id="total-view-time">0</span> min</p>
+          <p><strong>Total duration:</strong> <span id="total-duration">0</span> min</p>
+        </div>
+
+        <div class="route-actions">
+          <button class="action-btn" onclick="switchPlannerTab('select', document.getElementById('tab-btn-select'))">
+            <i class="fa-solid fa-arrow-left"></i> Adjust
+          </button>
+          <button class="action-btn primary" onclick="switchPlannerTab('save', document.getElementById('tab-btn-save'))">
+            Save Plan <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 3: Save -->
+      <div id="save-tab" class="planner-tab-content">
+        <div class="section-card" style="margin-bottom: 20px;">
+          <div class="section-card-header">
+            <i class="fa-solid fa-floppy-disk"></i> Save Your Plan
+          </div>
+          <div class="section-card-body">
+            <div class="save-form">
+              <label for="plan-name">Plan Name</label>
+              <input type="text" id="plan-name" placeholder="e.g. Family Day Out">
+
+              <label for="visit-date">Visit Date</label>
+              <input type="date" id="visit-date">
+
+              <label for="visitor-count">Number of Visitors</label>
+              <input type="number" id="visitor-count" min="1" value="2">
+
+              <label for="notes">Notes</label>
+              <textarea id="notes" placeholder="Any special requests or notes…"></textarea>
+
+              <button class="action-btn primary" style="margin-top:14px; width:100%; justify-content:center;" onclick="saveCurrentPlan()">
+                <i class="fa-solid fa-floppy-disk"></i> Save Plan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="saved-plans">
+          <h4>Saved Plans</h4>
+          <div id="saved-plans-list"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="dark-mode-toggle-container">
+    <label class="switch">
+      <input type="checkbox" id="dark-mode-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <nav id="tabs-bottom">
+    <a href="weather.html"><i class="fa-solid fa-sun"></i> <span>Weather</span></a>
+    <a href="feedback.html"><i class="fa-solid fa-comment-dots"></i> <span>Feedback</span></a>
+  </nav>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+  <script src="planner.js"></script>
+</body>
+</html>
