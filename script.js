@@ -1,5 +1,22 @@
 // script.js - Enhanced with Animal Icons
 
+// ── Compatibility helper: rounded rectangle (replaces ctx.roundRect) ──
+function roundRect(ctx, x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y,     x + w, y + r,     r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x,     y + h, x,     y + h - r, r);
+    ctx.lineTo(x,     y + r);
+    ctx.arcTo(x,     y,     x + r, y,         r);
+    ctx.closePath();
+}
+
+
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -48,148 +65,207 @@ function initInteractiveMap() {
         const tooltip = document.createElement('div');
         tooltip.id = 'map-tooltip';
         tooltip.style.cssText = `
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
+            position: fixed;
+            background: rgba(30, 50, 28, 0.96);
             color: white;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-size: 14px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
             pointer-events: none;
             display: none;
-            z-index: 1000;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            border: 2px solid white;
-            white-space: nowrap;
-            font-family: Arial, sans-serif;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1.5px solid rgba(111,170,94,0.5);
+            max-width: 200px;
+            word-wrap: break-word;
+            font-family: 'DM Sans', Arial, sans-serif;
+            line-height: 1.4;
         `;
         document.body.appendChild(tooltip);
     }
 }
 
 function drawBeautifulMap(ctx) {
-    const canvas = ctx.canvas;
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw sky gradient
-    const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.6);
-    skyGradient.addColorStop(0, '#87CEEB');
-    skyGradient.addColorStop(1, '#E0F6FF');
-    ctx.fillStyle = skyGradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height * 0.6);
-    
-    // Draw sun
+    // All coordinates are in 1000x600 logical space
+
+    // ── Background: lush green park ──
+    const bgGrad = ctx.createLinearGradient(0, 0, 1000, 600);
+    bgGrad.addColorStop(0,   '#5a9e4a');
+    bgGrad.addColorStop(0.5, '#4e9140');
+    bgGrad.addColorStop(1,   '#3d7a32');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1000, 600);
+
+    // ── Grass texture patches (lighter/darker) ──
+    const grassPatches = [
+        {x:0,   y:0,   w:300, h:200, c:'rgba(255,255,255,0.04)'},
+        {x:600, y:100, w:400, h:200, c:'rgba(0,0,0,0.05)'},
+        {x:100, y:350, w:350, h:250, c:'rgba(255,255,255,0.03)'},
+        {x:550, y:350, w:450, h:250, c:'rgba(0,0,0,0.04)'},
+    ];
+    grassPatches.forEach(p => {
+        ctx.fillStyle = p.c;
+        ctx.fillRect(p.x, p.y, p.w, p.h);
+    });
+
+    // ── Lake (central) ──
+    ctx.save();
     ctx.beginPath();
-    ctx.arc(850, 80, 50, 0, Math.PI * 2);
-    ctx.fillStyle = '#FFD700';
-    ctx.shadowColor = '#FFA500';
-    ctx.shadowBlur = 30;
+    ctx.ellipse(500, 300, 130, 75, -0.15, 0, Math.PI * 2);
+    const lakeGrad = ctx.createRadialGradient(490, 290, 10, 500, 300, 130);
+    lakeGrad.addColorStop(0,   '#5bc8f5');
+    lakeGrad.addColorStop(0.6, '#29a8d8');
+    lakeGrad.addColorStop(1,   '#1a7fa8');
+    ctx.fillStyle = lakeGrad;
     ctx.fill();
-    ctx.shadowBlur = 0;
-    
-    // Draw clouds
-    drawCloud(ctx, 200, 100);
-    drawCloud(ctx, 500, 150);
-    drawCloud(ctx, 700, 80);
-    
-    // Draw ground gradient
-    const groundGradient = ctx.createLinearGradient(0, canvas.height * 0.5, 0, canvas.height);
-    groundGradient.addColorStop(0, '#7CB342');
-    groundGradient.addColorStop(0.7, '#5D8C2B');
-    groundGradient.addColorStop(1, '#3D5A1F');
-    ctx.fillStyle = groundGradient;
-    ctx.fillRect(0, canvas.height * 0.5, canvas.width, canvas.height * 0.5);
-    
-    // Draw path network
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(0,0,0,0.2)';
-    
-    // Main path
-    ctx.beginPath();
-    ctx.strokeStyle = '#C1A06B';
-    ctx.lineWidth = 25;
-    ctx.moveTo(100, 500);
-    ctx.lineTo(300, 350);
-    ctx.lineTo(500, 250);
-    ctx.lineTo(700, 200);
-    ctx.lineTo(900, 300);
-    ctx.stroke();
-    
-    // Secondary paths
-    ctx.strokeStyle = '#A67B5B';
-    ctx.lineWidth = 15;
-    ctx.beginPath();
-    ctx.moveTo(200, 400);
-    ctx.lineTo(400, 450);
-    ctx.lineTo(600, 400);
-    ctx.lineTo(800, 450);
-    ctx.stroke();
-    
-    ctx.shadowBlur = 0;
-    
-    // Draw river
-    ctx.beginPath();
-    ctx.strokeStyle = '#4FC3F7';
-    ctx.lineWidth = 40;
-    ctx.moveTo(0, 300);
-    ctx.lineTo(250, 280);
-    ctx.lineTo(400, 300);
-    ctx.lineTo(550, 280);
-    ctx.lineTo(700, 300);
-    ctx.lineTo(850, 280);
-    ctx.lineTo(1000, 300);
-    ctx.stroke();
-    
-    // Add river sparkles
-    ctx.fillStyle = 'white';
-    for (let i = 0; i < 20; i++) {
+    // Lake shimmer
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 5; i++) {
         ctx.beginPath();
-        ctx.arc(100 + i * 50, 290 + Math.sin(i) * 10, 3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.fill();
+        ctx.ellipse(490 + i*6, 288 + i*4, 30 - i*4, 6 - i, -0.1, 0, Math.PI);
+        ctx.stroke();
     }
-    
-    // Draw trees
-    drawTree(ctx, 50, 400);
-    drawTree(ctx, 150, 550);
-    drawTree(ctx, 350, 500);
-    drawTree(ctx, 650, 450);
-    drawTree(ctx, 850, 550);
-    drawTree(ctx, 950, 400);
+    // Lake border
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(500, 300, 130, 75, -0.15, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // ── Sandy paths network ──
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Path shadow
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 28;
+    drawPathNetwork(ctx);
+
+    // Path fill
+    ctx.strokeStyle = '#d4b483';
+    ctx.lineWidth = 22;
+    drawPathNetwork(ctx);
+
+    // Path centre line (lighter)
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 8;
+    ctx.setLineDash([20, 14]);
+    drawPathNetwork(ctx);
+    ctx.setLineDash([]);
+
+    // ── Zoo entrance arch at bottom-centre ──
+    ctx.save();
+    ctx.strokeStyle = '#8B5E3C';
+    ctx.lineWidth = 6;
+    ctx.fillStyle = '#a0714a';
+    ctx.beginPath();
+    roundRect(ctx, 455, 555, 90, 45, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('ENTRANCE', 500, 582);
+    ctx.restore();
+
+    // ── Decorative trees / bushes ──
+    const treePositions = [
+        {x:30,  y:80},  {x:80,  y:160}, {x:30,  y:280},
+        {x:960, y:100}, {x:940, y:220}, {x:970, y:360},
+        {x:120, y:490}, {x:200, y:555}, {x:820, y:510},
+        {x:900, y:555}, {x:480, y:70},  {x:560, y:60},
+        {x:30,  y:470}, {x:970, y:470},
+    ];
+    treePositions.forEach(t => drawMapTree(ctx, t.x, t.y));
+
+    // ── Zone labels (subtle background tints) ──
+    const zones = [
+        {x:50,  y:30,  w:280, h:200, label:'NORTH AFRICA',   c:'rgba(200,160,80,0.08)'},
+        {x:670, y:30,  w:300, h:220, label:'ASIA ZONE',      c:'rgba(80,160,80,0.08)'},
+        {x:50,  y:370, w:260, h:200, label:'AFRICA WILD',    c:'rgba(160,80,40,0.08)'},
+        {x:700, y:350, w:280, h:220, label:'DISCOVERY ZONE', c:'rgba(60,120,180,0.08)'},
+    ];
+    zones.forEach(z => {
+        ctx.fillStyle = z.c;
+        ctx.beginPath();
+        roundRect(ctx, z.x, z.y, z.w, z.h, 16);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.22)';
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(z.label, z.x + 12, z.y + 20);
+    });
+}
+
+function drawPathNetwork(ctx) {
+    // Main ring road around lake
+    ctx.beginPath();
+    ctx.moveTo(150, 80);
+    ctx.bezierCurveTo(150, 50, 850, 50, 850, 80);
+    ctx.bezierCurveTo(950, 80, 950, 520, 850, 540);
+    ctx.bezierCurveTo(750, 570, 250, 570, 150, 540);
+    ctx.bezierCurveTo(50, 520, 50, 80, 150, 80);
+    ctx.stroke();
+
+    // Cross paths through middle
+    ctx.beginPath();
+    ctx.moveTo(150, 80);
+    ctx.lineTo(500, 220);
+    ctx.lineTo(850, 80);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(150, 540);
+    ctx.lineTo(500, 390);
+    ctx.lineTo(850, 540);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(500, 220);
+    ctx.lineTo(500, 390);
+    ctx.stroke();
+
+    // Entrance path
+    ctx.beginPath();
+    ctx.moveTo(500, 570);
+    ctx.lineTo(500, 600);
+    ctx.stroke();
+}
+
+function drawMapTree(ctx, x, y) {
+    // Shadow
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.beginPath();
+    ctx.ellipse(x + 4, y + 4, 16, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Trunk
+    ctx.fillStyle = '#7a5030';
+    ctx.fillRect(x - 4, y - 16, 8, 22);
+    // Canopy layers
+    const shades = ['#2d6e22', '#3a8a2a', '#4aa035'];
+    shades.forEach((c, i) => {
+        ctx.fillStyle = c;
+        ctx.beginPath();
+        ctx.arc(x, y - 18 - i * 10, 14 - i * 1, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.restore();
 }
 
 function drawCloud(ctx, x, y) {
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = 'rgba(255,255,255,0.5)';
-    
-    ctx.beginPath();
-    ctx.arc(x, y, 30, 0, Math.PI * 2);
-    ctx.arc(x + 35, y - 10, 35, 0, Math.PI * 2);
-    ctx.arc(x + 70, y, 30, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.shadowBlur = 0;
+    // kept for compatibility but not called in new map
 }
 
 function drawTree(ctx, x, y) {
-    // Trunk
-    ctx.fillStyle = '#8B5A2B';
-    ctx.fillRect(x - 10, y - 40, 20, 60);
-    
-    // Leaves
-    ctx.fillStyle = '#2E7D32';
-    ctx.beginPath();
-    ctx.arc(x, y - 50, 25, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x - 15, y - 65, 20, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x + 15, y - 65, 20, 0, Math.PI * 2);
-    ctx.fill();
+    // kept for compatibility but not called in new map
 }
+
 
 function drawAllIcons(ctx) {
     const locations = getAllLocations();
@@ -241,12 +317,23 @@ function drawAllIcons(ctx) {
         ctx.textBaseline = 'middle';
         ctx.fillText(loc.icon, loc.coords.x, loc.coords.y - 2);
         
-        // Draw label
-        ctx.font = 'bold 14px Arial';
-        ctx.fillStyle = 'white';
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = 'rgba(0,0,0,0.8)';
-        ctx.fillText(loc.name, loc.coords.x, loc.coords.y - 45);
+        // Draw label BELOW the pin with a backing pill for readability
+        const labelText = loc.name;
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const lw = ctx.measureText(labelText).width;
+        const lx = loc.coords.x;
+        const ly = loc.coords.y + 32;  // below the icon
+        // Pill background
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(20,40,18,0.72)';
+        ctx.beginPath();
+        roundRect(ctx, lx - lw/2 - 5, ly - 2, lw + 10, 17, 6);
+        ctx.fill();
+        // Label text
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(labelText, lx, ly);
     });
     
     ctx.shadowBlur = 0;
@@ -304,23 +391,22 @@ function handleMapHover(event) {
         if (distance < tolerance) {
             // Show tooltip
             tooltip.style.display = 'block';
-            tooltip.style.left = (event.pageX + 20) + 'px';
-            tooltip.style.top = (event.pageY - 50) + 'px';
-            
             const isAnimal = zooData.animals.includes(loc);
-            const type = isAnimal ? '🐾 Animal' : '📍 Attraction';
+            const type = isAnimal ? 'Animal' : 'Attraction';
             
-            tooltip.innerHTML = `
-                <strong style="font-size: 16px;">${loc.icon} ${loc.name}</strong><br>
-                <span style="font-size: 12px; color: #FFD700;">${type}</span><br>
-                <span style="font-size: 12px;">${loc.description}</span>
-            `;
-            
+            tooltip.innerHTML =
+                '<strong style="font-size:14px;display:block;margin-bottom:3px;">' + loc.name + '</strong>' +
+                '<span style="font-size:11px;color:#a8d89a;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;">' + type + '</span>' +
+                '<span style="font-size:12px;color:rgba(255,255,255,.75);">' + loc.description + '</span>';
+
+            // Smart positioning — keep inside viewport
+            const tx = Math.min(event.clientX + 16, window.innerWidth  - 220);
+            const ty = Math.max(event.clientY - 80,  10);
+            tooltip.style.left = tx + 'px';
+            tooltip.style.top  = ty + 'px';
+
             canvas.style.cursor = 'pointer';
             hovered = true;
-            
-            // Highlight the icon
-            drawAllIcons(ctx); // This would need ctx reference
             return;
         }
     }

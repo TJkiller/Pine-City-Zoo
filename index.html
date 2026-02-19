@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* ── Index-only styles (kept here since they're page-specific) ── */
+    /* ── Index-only styles ── */
     .welcome-banner {
       background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 60%, var(--green-light) 100%);
       border-radius: var(--radius-lg);
@@ -18,7 +18,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .welcome-banner::before {
       content: '';
       position: absolute;
@@ -27,7 +26,6 @@
       background: rgba(255,255,255,.07);
       border-radius: 50%;
     }
-
     .welcome-banner::after {
       content: '';
       position: absolute;
@@ -36,7 +34,6 @@
       background: rgba(255,255,255,.05);
       border-radius: 50%;
     }
-
     .welcome-banner h1 {
       font-family: 'Playfair Display', serif;
       font-size: 32px;
@@ -45,7 +42,6 @@
       position: relative;
       z-index: 1;
     }
-
     .welcome-banner p {
       font-size: 15px;
       opacity: .85;
@@ -54,14 +50,13 @@
       z-index: 1;
     }
 
-    /* Stats row */
+    /* Stats */
     .map-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-bottom: 20px;
     }
-
     .map-stat {
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -71,12 +66,7 @@
       box-shadow: var(--shadow-sm);
       transition: transform var(--transition), box-shadow var(--transition);
     }
-
-    .map-stat:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
+    .map-stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
     .map-stat-num {
       font-family: 'Playfair Display', serif;
       font-size: 30px;
@@ -84,7 +74,6 @@
       color: var(--green-mid);
       line-height: 1;
     }
-
     .map-stat-label {
       font-size: 12px;
       color: var(--text-secondary);
@@ -94,17 +83,16 @@
       font-weight: 600;
     }
 
-    /* Quick action buttons */
+    /* Quick Actions */
     .quick-actions {
       display: flex;
       gap: 10px;
       margin-bottom: 24px;
       flex-wrap: wrap;
     }
-
     .quick-action-btn {
       flex: 1;
-      min-width: 140px;
+      min-width: 130px;
       padding: 12px 14px;
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -118,13 +106,10 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      cursor: pointer;
       transition: all var(--transition);
       box-shadow: var(--shadow-sm);
     }
-
     .quick-action-btn i { color: var(--green-mid); font-size: 16px; }
-
     .quick-action-btn:hover {
       background: var(--green-deep);
       border-color: var(--green-deep);
@@ -132,10 +117,9 @@
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
-
     .quick-action-btn:hover i { color: #fff; }
 
-    /* Map container */
+    /* Map card */
     #map-container {
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -146,32 +130,59 @@
       margin: 0 auto;
     }
 
-    .map-canvas-wrap {
-      position: relative;
-      width: 100%;
+    /* Toolbar */
+    .map-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--stone-pale);
     }
+    .dark-mode .map-toolbar { background: rgba(111,170,94,.06); }
+    .map-toolbar-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .map-toolbar-title i { color: var(--green-mid); }
 
-    #interactive-map {
-      width: 100%;
-      height: auto;
-      display: block;
+    .btn-fullscreen {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 15px;
+      background: var(--green-deep);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
+      letter-spacing: .4px;
+      transition: background var(--transition), transform var(--transition);
     }
+    .btn-fullscreen:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-fullscreen i { font-size: 13px; }
 
-    /* Legend */
+    .map-canvas-wrap { position: relative; width: 100%; }
+    #interactive-map { width: 100%; height: auto; display: block; cursor: pointer; }
+
     .map-legend {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
       gap: 20px;
-      padding: 14px 20px;
+      padding: 12px 20px;
       border-top: 1px solid var(--border);
       background: var(--stone-pale);
     }
-
     .dark-mode .map-legend { background: rgba(111,170,94,.06); }
-
     .legend-item {
       display: flex;
       align-items: center;
@@ -180,16 +191,14 @@
       color: var(--text-secondary);
       font-weight: 500;
     }
-
     .legend-dot {
       width: 13px; height: 13px;
       border-radius: 50%;
       flex-shrink: 0;
       border: 2px solid rgba(255,255,255,.7);
     }
-
-    .legend-dot.animal { background: var(--accent-gold); box-shadow: 0 1px 4px rgba(200,155,60,.4); }
-    .legend-dot.place  { background: #2176ae;            box-shadow: 0 1px 4px rgba(33,118,174,.4); }
+    .legend-dot.animal { background: var(--accent-gold); }
+    .legend-dot.place  { background: #2176ae; }
 
     .map-hint {
       text-align: center;
@@ -202,13 +211,130 @@
       justify-content: center;
       gap: 6px;
     }
-
     .map-hint i { color: var(--green-light); }
 
+    /* ══════════════════════════════════════
+       FULLSCREEN OVERLAY
+    ══════════════════════════════════════ */
+    #map-fullscreen-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: #0d1a0b;
+      flex-direction: column;
+    }
+    #map-fullscreen-overlay.open {
+      display: flex;
+      animation: fsIn .2s ease;
+    }
+    @keyframes fsIn {
+      from { opacity: 0; transform: scale(.98); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* FS Header */
+    .fs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--green-deep);
+      flex-shrink: 0;
+    }
+    .fs-header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .fs-header-title i { opacity: .75; font-size: 15px; }
+
+    .btn-close-fs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .btn-close-fs:hover { background: rgba(255,255,255,.28); }
+
+    /* FS Canvas area */
+    .fs-canvas-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      overflow: hidden;
+    }
+    #interactive-map-fs {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 0 80px rgba(0,0,0,.6);
+    }
+
+    /* FS Footer */
+    .fs-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 11px 20px;
+      background: rgba(0,0,0,.45);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .fs-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: rgba(255,255,255,.7);
+    }
+    .fs-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.4);
+    }
+    .fs-dot.animal { background: var(--accent-gold); }
+    .fs-dot.place  { background: #4da3e8; }
+    .fs-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,.4);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fs-esc {
+      display: inline-block;
+      background: rgba(255,255,255,.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: monospace;
+    }
+
     @media (max-width: 480px) {
-      .welcome-banner h1 { font-size: 24px; }
+      .welcome-banner h1 { font-size: 22px; }
       .map-stat-num { font-size: 24px; }
-      .quick-action-btn { font-size: 12px; padding: 10px 10px; }
+      .quick-action-btn { font-size: 12px; padding: 10px; }
+      .fs-header-title { font-size: 14px; }
+      .fs-hint { display: none; }
     }
   </style>
 </head>
@@ -271,30 +397,64 @@
         </a>
       </div>
 
-      <!-- Interactive Map -->
+      <!-- Map Card -->
       <div id="map-container">
+
+        <div class="map-toolbar">
+          <div class="map-toolbar-title">
+            <i class="fa-solid fa-map-location-dot"></i>
+            Interactive Zoo Map
+          </div>
+          <button class="btn-fullscreen" onclick="openFullscreen()">
+            <i class="fa-solid fa-expand"></i> Full Screen
+          </button>
+        </div>
+
         <div class="map-canvas-wrap">
           <canvas id="interactive-map"></canvas>
         </div>
 
         <div class="map-legend">
-          <div class="legend-item">
-            <span class="legend-dot animal"></span>
-            Animals
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot place"></span>
-            Places &amp; Attractions
-          </div>
+          <div class="legend-item"><span class="legend-dot animal"></span> Animals</div>
+          <div class="legend-item"><span class="legend-dot place"></span> Places &amp; Attractions</div>
         </div>
 
         <div class="map-hint">
           <i class="fa-solid fa-hand-pointer"></i>
           Hover over markers to preview — click to explore
         </div>
+
       </div>
 
     </div>
+  </div>
+
+  <!-- ══ FULLSCREEN OVERLAY ══ -->
+  <div id="map-fullscreen-overlay">
+
+    <div class="fs-header">
+      <div class="fs-header-title">
+        <i class="fa-solid fa-map-location-dot"></i>
+        Pine City Zoo — Interactive Map
+      </div>
+      <button class="btn-close-fs" onclick="closeFullscreen()">
+        <i class="fa-solid fa-compress"></i> Exit Full Screen
+      </button>
+    </div>
+
+    <div class="fs-canvas-wrap" id="fs-canvas-wrap">
+      <canvas id="interactive-map-fs"></canvas>
+    </div>
+
+    <div class="fs-footer">
+      <div class="fs-legend-item"><span class="fs-dot animal"></span> Animals</div>
+      <div class="fs-legend-item"><span class="fs-dot place"></span> Places &amp; Attractions</div>
+      <div class="fs-hint">
+        <i class="fa-solid fa-hand-pointer"></i> Click a marker to navigate &nbsp;·&nbsp;
+        <span class="fs-esc">Esc</span> to exit
+      </div>
+    </div>
+
   </div>
 
   <div id="dark-mode-toggle-container">
@@ -311,5 +471,152 @@
 
   <script src="data.js"></script>
   <script src="script.js"></script>
+  <script>
+    const overlay  = document.getElementById('map-fullscreen-overlay');
+    const fsCanvas = document.getElementById('interactive-map-fs');
+    const fsWrap   = document.getElementById('fs-canvas-wrap');
+
+    /* ── Open fullscreen ── */
+    function openFullscreen() {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      const el = overlay;
+      if      (el.requestFullscreen)       el.requestFullscreen().catch(() => {});
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.mozRequestFullScreen)    el.mozRequestFullScreen();
+
+      // Two rAF frames: first lets overlay display:flex render,
+      // second lets browser calculate real clientWidth/Height
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        sizeAndDrawFs();
+      }));
+    }
+
+    /* ── Close fullscreen ── */
+    function closeFullscreen() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('map-tooltip').style.display = 'none';
+
+      if      (document.exitFullscreen)       document.exitFullscreen().catch(() => {});
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if (document.mozCancelFullScreen)  document.mozCancelFullScreen();
+    }
+
+    /* ── Size canvas and draw — fills the full screen ── */
+    function sizeAndDrawFs() {
+      // Use window dimensions — reliable in both native fullscreen and overlay mode
+      const totalH  = window.innerHeight;
+      const headerH = overlay.querySelector('.fs-header').offsetHeight || 56;
+      const footerH = overlay.querySelector('.fs-footer').offsetHeight || 46;
+      const availW  = window.innerWidth  - 64;  // 32px gap each side
+      const availH  = totalH - headerH - footerH - 64;
+
+      // Keep 1000:600 aspect ratio
+      const ratio = 1000 / 600;
+      let w = availW;
+      let h = w / ratio;
+      if (h > availH) { h = availH; w = h * ratio; }
+      w = Math.round(w);
+      h = Math.round(h);
+
+      // Internal canvas resolution scales up for sharp rendering on big screens
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      fsCanvas.width  = w * dpr;
+      fsCanvas.height = h * dpr;
+      fsCanvas.style.width  = w + 'px';
+      fsCanvas.style.height = h + 'px';
+
+      // Draw at the higher resolution
+      const ctx = fsCanvas.getContext('2d');
+      ctx.setTransform(dpr * (w / 1000), 0, 0, dpr * (h / 600), 0, 0);
+      drawBeautifulMap(ctx);
+      drawAllIcons(ctx);
+
+      // Wire up interactions — .onclick assignment safely replaces old handler
+      const tooltip = document.getElementById('map-tooltip');
+
+      fsCanvas.onclick = function(e) {
+        const rect   = fsCanvas.getBoundingClientRect();
+        // Map CSS px back to the 1000x600 logical coordinate space
+        const mx = (e.clientX - rect.left) * (1000 / rect.width);
+        const my = (e.clientY - rect.top)  * (600  / rect.height);
+        for (const loc of getAllLocations()) {
+          const dx = mx - loc.coords.x;
+          const dy = my - loc.coords.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 40) { window.location.href = loc.page; return; }
+        }
+      };
+
+      fsCanvas.onmousemove = function(e) {
+        const rect   = fsCanvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) * (1000 / rect.width);
+        const my = (e.clientY - rect.top)  * (600  / rect.height);
+        let found = false;
+        for (const loc of getAllLocations()) {
+          const dx = mx - loc.coords.x;
+          const dy = my - loc.coords.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 40) {
+            const isAnim = zooData.animals.includes(loc);
+            tooltip.innerHTML =
+              '<strong style="font-size:14px;display:block;margin-bottom:3px;">' + loc.name + '</strong>' +
+              '<span style="font-size:11px;color:#a8d89a;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;">' + (isAnim ? 'Animal' : 'Attraction') + '</span>' +
+              '<span style="font-size:12px;color:rgba(255,255,255,.75);">' + loc.description + '</span>';
+            // Smart positioning — stays inside viewport
+            const tx = Math.min(e.clientX + 16, window.innerWidth  - 220);
+            const ty = Math.max(e.clientY - 90,  10);
+            tooltip.style.left    = tx + 'px';
+            tooltip.style.top     = ty + 'px';
+            tooltip.style.display = 'block';
+            fsCanvas.style.cursor = 'pointer';
+            found = true; break;
+          }
+        }
+        if (!found) { tooltip.style.display = 'none'; fsCanvas.style.cursor = 'default'; }
+      };
+
+      fsCanvas.onmouseleave = () => { tooltip.style.display = 'none'; };
+
+      fsCanvas.ontouchend = function(e) {
+        e.preventDefault();
+        const touch  = e.changedTouches[0];
+        const rect   = fsCanvas.getBoundingClientRect();
+        const scaleX = 1000 / rect.width;
+        const scaleY = 600  / rect.height;
+        const mx = (touch.clientX - rect.left) * scaleX;
+        const my = (touch.clientY - rect.top)  * scaleY;
+        for (const loc of getAllLocations()) {
+          const dx = mx - loc.coords.x;
+          const dy = my - loc.coords.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 48) { window.location.href = loc.page; return; }
+        }
+      };
+    }
+
+    /* ── Keyboard: Escape to close ── */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) {
+        closeFullscreen();
+      }
+    });
+
+    /* ── Native fullscreen ended (e.g. user pressed F11 or browser button) ── */
+    document.addEventListener('fullscreenchange',       syncFsState);
+    document.addEventListener('webkitfullscreenchange', syncFsState);
+    document.addEventListener('mozfullscreenchange',    syncFsState);
+    function syncFsState() {
+      const active = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!active && overlay.classList.contains('open')) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    /* ── Resize: redraw if overlay open ── */
+    window.addEventListener('resize', () => {
+      if (overlay.classList.contains('open')) sizeAndDrawFs();
+    });
+  </script>
 </body>
 </html>
