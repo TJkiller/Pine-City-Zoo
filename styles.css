@@ -1,9 +1,3 @@
-/* ============================================================
-   PINE CITY ZOO — Main Stylesheet
-   Aesthetic: Nature-refined | Earthy greens + warm stone
-   Fonts: Playfair Display (headings) + DM Sans (body)
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
@@ -165,7 +159,9 @@ body {
   margin-top: calc(var(--header-h) + var(--tabs-top-h));
   margin-bottom: var(--tabs-bot-h);
   min-height: calc(100vh - var(--header-h) - var(--tabs-top-h) - var(--tabs-bot-h));
-  padding: 28px 16px 32px;
+  /* Bottom padding clears the fixed toggle (sits ~40px tall, 14px above bottom nav)
+     plus comfortable breathing room so last card is never hidden behind it */
+  padding: 28px 16px calc(var(--tabs-bot-h) + 80px);
   background: var(--bg);
   transition: background var(--transition);
 }
@@ -1529,7 +1525,7 @@ input:checked + .slider::after {
   max-width: 740px;
   margin: 0 auto;
   /* Bottom padding clears the fixed bottom nav bar + comfortable gap */
-  padding: 32px 24px calc(var(--tabs-bot-h) + 48px);
+  padding: 32px 24px calc(var(--tabs-bot-h) + 80px); /* +80px clears the fixed toggle above the bottom nav */
 }
 
 /* ── Back button ── */
@@ -1702,7 +1698,7 @@ input:checked + .slider::after {
   .detail-hero-title { font-size: 1.75rem; }
 
   .detail-container {
-    padding: 24px 16px calc(var(--tabs-bot-h) + 40px);
+    padding: 24px 16px calc(var(--tabs-bot-h) + 80px); /* mobile: same toggle clearance */
   }
 
   /* 2-column facts on small phones */
