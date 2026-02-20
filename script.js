@@ -1,5 +1,3 @@
-// script.js - Enhanced with Animal Icons
-
 // ── Compatibility helper: rounded rectangle (replaces ctx.roundRect) ──
 function roundRect(ctx, x, y, w, h, r) {
     r = Math.min(r, w / 2, h / 2);

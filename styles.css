@@ -1315,6 +1315,26 @@ a.info-box:hover .ib-arrow {
   bottom: calc(var(--tabs-bot-h) + 14px);
   right: 16px;
   z-index: 700;
+  /* Pill background so it reads cleanly over any page content */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 6px 12px 6px 8px;
+  box-shadow: var(--shadow-md);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+#dark-mode-toggle-container > i {
+  color: var(--accent-gold);
+  font-size: 14px;
+  transition: color var(--transition);
+}
+
+.dark-mode #dark-mode-toggle-container > i {
+  color: #a8c4e0;
 }
 
 .switch {
@@ -1350,7 +1370,7 @@ input:checked + .slider { background: var(--green-mid); }
 input:checked + .slider::before { transform: translateX(24px); }
 
 .slider::after {
-  content: '\f185'; /* fa-sun */
+  content: '\f185';
   font-family: 'Font Awesome 6 Free';
   font-weight: 900;
   position: absolute;
@@ -1361,7 +1381,7 @@ input:checked + .slider::before { transform: translateX(24px); }
 }
 
 input:checked + .slider::after {
-  content: '\f186'; /* fa-moon */
+  content: '\f186';
   left: 7px; right: auto;
   color: #fff;
 }
@@ -1412,4 +1432,281 @@ input:checked + .slider::after {
 
   #tabs-top a span, #tabs-bottom a span { display: none; }
   #tabs-top a, #tabs-bottom a { font-size: 16px; }
+}
+
+
+/* ============================================================
+   DETAIL PAGES — Animal & Place individual pages
+   Classes used: .detail-hero, .detail-container, .detail-body,
+   .detail-section-label, .detail-location-card, .detail-facts,
+   .fact-chip, .detail-back-btn, .detail-hero-badge,
+   .detail-hero-title, .detail-hero-overlay, .schedule-list
+   ============================================================ */
+
+/* ── Hero image banner ── */
+.detail-hero {
+  position: relative;
+  width: 100%;
+  margin-top: calc(var(--header-h) + var(--tabs-top-h));
+  /* No fixed height — expands to fit the full image naturally */
+  background: #1a2018;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Blurred duplicate of the image fills letterbox edges with atmosphere
+   instead of leaving black or green bars around a contained image */
+.detail-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--hero-img);
+  background-size: cover;
+  background-position: center;
+  filter: blur(18px) brightness(0.4) saturate(0.6);
+  transform: scale(1.1); /* hides blur fringe at edges */
+  z-index: 0;
+}
+
+/* The actual <img> — full picture always visible, never cropped */
+.detail-hero img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-height: 70vh;    /* caps on very tall screens so it doesn't swamp content */
+  object-fit: contain; /* whole image shown at natural ratio */
+  object-position: center;
+}
+
+.detail-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* Gradient only at bottom where badge + title live */
+  background: linear-gradient(to top, rgba(20,35,18,0.92) 0%, transparent 48%);
+  display: flex;
+  align-items: flex-end;
+  padding: 32px 28px;
+  pointer-events: none;
+}
+
+.detail-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+  margin: 0;
+}
+
+/* Animal badge = gold, Place badge = green (add class .place) */
+.detail-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-gold);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.detail-hero-badge.place {
+  background: var(--green-mid);
+}
+
+/* ── Main content container ── */
+.detail-container {
+  max-width: 740px;
+  margin: 0 auto;
+  /* Bottom padding clears the fixed bottom nav bar + comfortable gap */
+  padding: 32px 24px calc(var(--tabs-bot-h) + 48px);
+}
+
+/* ── Back button ── */
+.detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-deep);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  margin-bottom: 28px;
+  transition: background var(--transition);
+}
+
+.detail-back-btn:hover { background: var(--green-mid); }
+
+/* ── Quick-facts chips grid ── */
+.detail-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.fact-chip {
+  background: var(--green-pale);
+  border: 1px solid rgba(111,170,94,0.2);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  transition: box-shadow var(--transition);
+}
+
+.fact-chip:hover { box-shadow: var(--shadow-sm); }
+
+.fact-chip i {
+  color: var(--green-mid);
+  margin-bottom: 7px;
+  display: block;
+  font-size: 1.15rem;
+}
+
+.fact-chip .fact-val {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+}
+
+.fact-chip .fact-lbl {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 2px;
+  display: block;
+}
+
+/* ── Section divider labels (e.g. "About", "Where to Find") ── */
+.detail-section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green-mid);
+  margin: 32px 0 14px;
+}
+
+.detail-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Body text ── */
+.detail-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.97rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+}
+
+.detail-body p { margin: 0 0 16px; }
+.detail-body ul { margin: 0 0 16px; padding-left: 20px; }
+.detail-body ul li { margin-bottom: 6px; }
+
+/* ── Location card ── */
+.detail-location-card {
+  background: var(--stone-pale);
+  border-left: 4px solid var(--green-light);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.detail-location-card i {
+  color: var(--green-mid);
+  font-size: 1.1rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Schedule list (used on Amphitheatre etc.) ── */
+.schedule-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem;
+  color: var(--text-primary);
+}
+
+.schedule-list li:last-child { border-bottom: none; }
+
+.schedule-time {
+  background: var(--green-deep);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Dark mode overrides for detail components ── */
+.dark-mode .fact-chip {
+  background: rgba(111,170,94,0.1);
+  border-color: rgba(111,170,94,0.15);
+}
+
+.dark-mode .schedule-list li {
+  border-color: var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .detail-hero {
+    /* No height override needed — image determines height naturally.
+       margin-top re-stated so smaller mobile variable values are picked up */
+    margin-top: calc(var(--header-h) + var(--tabs-top-h));
+    max-height: none; /* let 70vh cap on img handle it */
+  }
+
+  .detail-hero-title { font-size: 1.75rem; }
+
+  .detail-container {
+    padding: 24px 16px calc(var(--tabs-bot-h) + 40px);
+  }
+
+  /* 2-column facts on small phones */
+  .detail-facts {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

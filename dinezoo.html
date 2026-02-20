@@ -1,35 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dine at the Zoo — Pine City Zoo</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="header">
-<img src="images/logo.png"/>
-</div>
-<div id="tabs-top">
-<a href="animals.html">ANIMALS</a>
-<a href="index.html">MAP</a>
-<a href="places.html">PLACES</a>
-</div>
-<div id="main">
-<div id="content">
-<div id="info-box-full">
-<img src="images/outdoor_restaurant.jpg"/>
-<h3>DINE @THE ZOO</h3>
-<p>Gourmet meals, a serene atmosphere, live music and good company - sometimes that's all you need.</p>
-<p>Dine @The Zoo gives you all this.</p>
-<strong><p>WHERE WILL YOU FIND THEM</p></strong>
-<p>Dine @The Zoo is located just behind the Amphitheatre.</p>
-</div>
-</div>
-</div>
-<div id="tabs-bottom">
-<a href="weather.html">WEATHER</a>
-<a href="feedback.html">FEEDBACK</a>
-</div>
+  <header id="header">
+    <a href="index.html" class="header-logo"><img src="images/logo.png" alt="Pine City Zoo"></a>
+  </header>
+  <nav id="tabs-top">
+    <a href="animals.html"><i class="fa-solid fa-paw"></i> Animals</a>
+    <a href="index.html"><i class="fa-solid fa-map"></i> Map</a>
+    <a href="places.html"><i class="fa-solid fa-location-dot"></i> Places</a>
+  </nav>
+  <div class="detail-hero" style="--hero-img: url(images/outdoor_restaurant.jpg)">
+    <img src="images/outdoor_restaurant.jpg" alt="Dine @The Zoo">
+    <div class="detail-hero-overlay">
+      <div>
+        <div class="detail-hero-badge place"><i class="fa-solid fa-location-dot"></i> Restaurant</div>
+        <h1 class="detail-hero-title">Dine @The Zoo</h1>
+      </div>
+    </div>
+  </div>
+  <div class="detail-container">
+    <a href="places.html" class="detail-back-btn"><i class="fa-solid fa-arrow-left"></i> All Places</a>
+    <div class="detail-facts">
+      <div class="fact-chip">
+        <i class="fa-solid star"></i>
+        <span class="fact-val">Gourmet dining</span>
+        <span class="fact-lbl">Style</span>
+      </div>
+      <div class="fact-chip">
+        <i class="fa-solid music"></i>
+        <span class="fact-val">Live music</span>
+        <span class="fact-lbl">Feature</span>
+      </div>
+      <div class="fact-chip">
+        <i class="fa-solid tree"></i>
+        <span class="fact-val">Outdoor seating</span>
+        <span class="fact-lbl">Ambience</span>
+      </div>
+      <div class="fact-chip">
+        <i class="fa-solid utensils"></i>
+        <span class="fact-val">Fine cuisine</span>
+        <span class="fact-lbl">Menu</span>
+      </div>
+    </div>
+    <div class="detail-section-label"><i class="fa-solid book-open"></i> About</div>
+    <div class="detail-body">
+      <p>Gourmet meals, a serene atmosphere, live music and good company — sometimes that's all you need.</p>
+      <p>Dine @The Zoo gives you all this. Enjoy expertly prepared dishes in a relaxed outdoor setting surrounded by the sights and sounds of the zoo. The perfect way to end a wonderful day.</p>
+    </div>
+    <div class="detail-section-label"><i class="fa-solid location-dot"></i> Where to Find It</div>
+    <div class="detail-location-card">
+      <i class="fa-solid fa-map-pin"></i>
+      <span>Dine @The Zoo is located <strong>just behind the Amphitheatre</strong>.</span>
+    </div>
+  </div>
+  <nav id="tabs-bottom">
+    <a href="weather.html"><i class="fa-solid fa-cloud-sun"></i> Weather</a>
+    <a href="feedback.html"><i class="fa-solid fa-star"></i> Feedback</a>
+  </nav>
+  <div id="dark-mode-toggle-container">
+    <label class="switch">
+      <input type="checkbox" id="dark-mode-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
-
-
-

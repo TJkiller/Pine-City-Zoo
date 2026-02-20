@@ -1,36 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lions — Pine City Zoo</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="header">
-<img src="images/logo.png"/>
-</div>
-<div id="tabs-top">
-<a href="animals.html">ANIMALS</a>
-<a href="index.html">MAP</a>
-<a href="places.html">PLACES</a>
-</div>
-<div id="main">
-<div id="content">
-<div id="info-box-full">
-<img src="images/lion.jpg"/>
-<h3>LIONS</h3>
-<p>The lion (Panthera leo) is one of the five big cats in the genus Panthera and a member of the family Felidae. The commonly used term African lion collectively denotes the several subspecies found in Africa. With some males exceeding 250 kg (550 lb) in weight, it is the second-largest living cat after the tiger.</p>
-<p>Wild lions currently exist in sub-Saharan Africa and in Asia (where an endangered remnant population resides in Gir Forest National Park in India) while other types of lions have disappeared from North Africa and Southwest Asia in historic times. Until the late Pleistocene, about 10,000 years ago, the lion was the most widespread large land mammal after humans. They were found in most of Africa, across Eurasia from western Europe to India, and in the Americas from the Yukon to Peru.</p>
-<p>The lion is a vulnerable species, having seen a major population decline in its African range of 30 to 50% per two decades during the second half of the twentieth century. Lion populations are untenable outside designated reserves and national parks. Although the cause of the decline is not fully understood, habitat loss and conflicts with humans are currently the greatest causes of concern. Within Africa, the West African lion population is particularly endangered.</p>
-<strong><p>WHERE WILL YOU FIND THEM</p></strong>
-<p>You will find the lions at the Northern Frontier</p>
-</div>
-</div>
-</div>
-<div id="tabs-bottom">
-<a href="weather.html">WEATHER</a>
-<a href="feedback.html">FEEDBACK</a>
-</div>
+  <header id="header">
+    <a href="index.html" class="header-logo"><img src="images/logo.png" alt="Pine City Zoo"></a>
+  </header>
+  <nav id="tabs-top">
+    <a href="animals.html"><i class="fa-solid fa-paw"></i> Animals</a>
+    <a href="index.html"><i class="fa-solid fa-map"></i> Map</a>
+    <a href="places.html"><i class="fa-solid fa-location-dot"></i> Places</a>
+  </nav>
+  <div class="detail-hero" style="--hero-img: url(images/lion.jpg)">
+    <img src="images/lion.jpg" alt="Lions">
+    <div class="detail-hero-overlay">
+      <div>
+        <div class="detail-hero-badge "><i class="fa-solid fa-paw"></i> Animal</div>
+        <h1 class="detail-hero-title">Lions</h1>
+      </div>
+    </div>
+  </div>
+  <div class="detail-container">
+    <a href="animals.html" class="detail-back-btn"><i class="fa-solid fa-arrow-left"></i> All Animals</a>
+    <div class="detail-facts">
+      <div class="fact-chip">
+        <i class="fa-solid earth-africa"></i>
+        <span class="fact-val">Sub-Saharan Africa</span>
+        <span class="fact-lbl">Origin</span>
+      </div>
+      <div class="fact-chip">
+        <i class="fa-solid weight-scale"></i>
+        <span class="fact-val">Up to 250 kg</span>
+        <span class="fact-lbl">Weight</span>
+      </div>
+      <div class="fact-chip">
+        <i class="fa-solid users"></i>
+        <span class="fact-val">Social pride</span>
+        <span class="fact-lbl">Behaviour</span>
+      </div>
+      <div class="fact-chip">
+        <i class="fa-solid triangle-exclamation"></i>
+        <span class="fact-val">Vulnerable</span>
+        <span class="fact-lbl">Status</span>
+      </div>
+    </div>
+    <div class="detail-section-label"><i class="fa-solid book-open"></i> About</div>
+    <div class="detail-body">
+      <p>The lion (<em>Panthera leo</em>) is one of the five big cats in the genus Panthera and a member of the family Felidae. With some males exceeding 250 kg in weight, it is the second-largest living cat after the tiger.</p>
+      <p>Wild lions currently exist in sub-Saharan Africa and in Asia, where an endangered remnant population resides in Gir Forest National Park in India. Until the late Pleistocene, about 10,000 years ago, the lion was the most widespread large land mammal after humans.</p>
+      <p>The lion is a vulnerable species, having seen a major population decline in its African range of 30 to 50% per two decades during the second half of the twentieth century. Habitat loss and conflicts with humans are currently the greatest causes of concern.</p>
+    </div>
+    <div class="detail-section-label"><i class="fa-solid location-dot"></i> Where to Find Them</div>
+    <div class="detail-location-card">
+      <i class="fa-solid fa-map-pin"></i>
+      <span>You will find the lions at the <strong>Northern Frontier</strong>.</span>
+    </div>
+  </div>
+  <nav id="tabs-bottom">
+    <a href="weather.html"><i class="fa-solid fa-cloud-sun"></i> Weather</a>
+    <a href="feedback.html"><i class="fa-solid fa-star"></i> Feedback</a>
+  </nav>
+  <div id="dark-mode-toggle-container">
+    <label class="switch">
+      <input type="checkbox" id="dark-mode-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
-
-
-
